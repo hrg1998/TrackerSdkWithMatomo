@@ -7,6 +7,7 @@ import com.fingerprintjs.android.fingerprint.Configuration
 import com.fingerprintjs.android.fingerprint.Fingerprinter
 import com.fingerprintjs.android.fingerprint.FingerprinterFactory
 import com.fingerprintjs.android.fpjs_pro.FingerprintJSFactory
+import com.hrg.variables.Variables
 import org.matomo.sdk.Matomo
 import org.matomo.sdk.TrackMe
 import org.matomo.sdk.Tracker
@@ -32,7 +33,7 @@ abstract class TrackerSdkApplication : Application() {
         val myApp: TrackerSdkApplication
             get() = instance
 
-        lateinit var userAgent :String
+        lateinit var userAgent: String
     }
 
     private var mMatomoTracker: Tracker? = null
@@ -86,16 +87,15 @@ abstract class TrackerSdkApplication : Application() {
                 val fingerprint: Fingerprinter = FingerprinterFactory
                     .getInstance(applicationContext, Configuration(version = 3))
 
-                if (userId==null){
+                if (userId == null) {
                     fpjsClient.getVisitorId {
                         userId = it.visitorId
-                        Log.e("userId",userId)
+                        Log.e("userId", userId)
                         sharedPreferences.edit().putString("tracker.fingerprint", userId).apply()
                     }
                 }
 
-                while(userId==null)
-                {
+                while (userId == null) {
                     Thread.sleep(1000)
                 }
 //                fingerprint.getFingerprint {
@@ -131,9 +131,10 @@ abstract class TrackerSdkApplication : Application() {
         super.onTrimMemory(level)
     }
 
-    open fun createDefaultConfig(siteId: Int) {
+    open fun createDefaultConfig(siteId: Int, token: String) {
         this.mSiteId = siteId
         Values.SITE_ID = siteId
+        Variables.token = token
 
         Timber.tag("CrossClassify:")
             .i("You have successfully added siteId.")
